@@ -1,0 +1,86 @@
+// global style and changing bulma variables
+
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700|Lato:400,800,900');
+$family-sans-serif :"Nunito", "sans-serif";
+
+// update some bulma's component
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
+// Global styles
+html, body{
+    height: 100%;
+}
+
+html{
+    background-image: url('./assets/background.svg');
+    background-size: cover;
+    overflow-y: auto !important;
+}
+
+.board{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    //overriding flexbox
+    min-width: 0;
+    min-height: 0;
+    
+    .board-bar{
+     background: rgba(gray,  0.5);
+     padding: 8px 15px;
+
+        .board-name{
+         font-size: 20px;
+         font-weight: bold;
+         color: white;
+        }
+    }
+
+    .board-wrapper{
+        display: flex;
+        flex-grow: 1;
+        overflow-x: auto;
+
+        .board-columns{
+            display: flex;
+            flex-grow: 1;
+
+            .board-column{
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                flex-basis: 0; //to force the columns to all be the same size, regadless of content
+
+                min-width: 300px;
+                margin: 50px;
+                padding: 25px;
+                
+                border-radius: 4px;
+
+                background: rgba(white,0.5);
+
+                &:not(:first-child){
+                    margin-left: 0;
+                }
+
+                .column-title{
+                    font-size: 20px;
+                    font-weight: 800;
+                    font-family: 'Leto', sans-serif;
+                    text-transform: uppercase;
+                    margin-bottom: 20px;
+                }
+
+            }
+
+        }
+    }
+
+
+}
+
+
