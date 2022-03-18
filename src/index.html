@@ -28,7 +28,7 @@
       //       console.log(name);
       //     }
       //   }]);
-      function editTask(e, item, name){
+      function editTask(e, item, name, key){
           // var key = e.keyCode || e.which;
         if (e.key == 'Enter') {
           let id = document.getElementById('edit'+item);
@@ -36,8 +36,8 @@
           // console.log(name);
 
           // get data
-          let getItem = JSON.parse(localStorage.getItem(name) || '{}'); 
-          // console.log(getItem.tasks);
+          let getItem = JSON.parse(localStorage.getItem(key) || '{}'); 
+          console.log(key);
 
           // buat array baru
           let array = [];
@@ -55,7 +55,7 @@
           // Update new value
           array.push(value);
           console.log(array);
-          localStorage.setItem(name, JSON.stringify({ name: name, tasks: array }));
+          localStorage.setItem(key, JSON.stringify({id:key, name: name, tasks: array }));
           localStorage.setItem('isset', '1');
           
           // synchronize value in FE
@@ -70,6 +70,44 @@
         }
         
       }
+
+      function editActivity(e, name, key) {
+          // var key = e.keyCode || e.which;
+          if (e.key == 'Enter') {
+            let id = document.getElementById('edit' + key);
+            let value = id.value;
+            // console.log(name);
+            console.log(name);
+
+            // get data
+            let getItem = JSON.parse(localStorage.getItem(key) || '{}');
+
+            // buat array baru
+            let array = [];
+            for (let i = 0; i < getItem.tasks.length; i++) {
+              array.push(getItem.tasks[i]);
+
+            }
+
+
+            // Update new value
+            console.log(array);
+            localStorage.setItem(key, JSON.stringify({id:key, name: value, tasks: array }));
+            localStorage.setItem('isset', '1');
+
+            // synchronize value in FE
+            // location.reload();
+            // id.innerHTML = `<input id="edit` + item + `" class="input is-normal" type="text" value="` + value + `" 
+            // onkeypress="editTask(event, '`+ item + `', '` + name + `')">`;
+            document.getElementById(key).innerHTML = value;
+          }
+          else if (e.key === 'Esc') {
+            document.getElementById(id).innerHTML = item;
+            // console.log(e.key);
+          }
+
+        }
+
 
       //Modals
       document.addEventListener('DOMContentLoaded', () => {
@@ -120,6 +158,7 @@
           //   }
           // });
         });
+        
       </script>
 </body>
 </html>

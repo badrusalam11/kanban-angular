@@ -128,3 +128,64 @@
 .pointer{
     cursor:pointer;
 }
+.white-color{
+    opacity: 1;
+    color: rgb(145, 144, 144);
+}
+
+.myboard:hover{
+    background-color: lightgreen;
+}
+
+.active{
+    background-color: lightgreen;
+    border: 2px solid green;
+}
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    position: absolute;
+    width: 100px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  animation: tooltipkeys 1s 1; //here just change the 1s to you desired delay time!
+  opacity: 1;
+}
+
+.tooltip-bottom {
+    top: 135%;
+    left: 70%;
+    margin-left: -60px;
+}
+
+@-webkit-keyframes tooltipkeys{ 0%   {opacity: 0;} 75%  {opacity: 0;} 100% {opacity: 1;} }
+@-moz-keyframes tooltipkeys{ 0%   {opacity: 0;} 75%  {opacity: 0;} 100% {opacity: 1;} }
+@-o-keyframes tooltipkeys{ 0%   {opacity: 0;} 75%  {opacity: 0;} 100% {opacity: 1;} }
+@keyframes tooltipkeys { 0%   {opacity: 0;} 75%  {opacity: 0;} 100% {opacity: 1;} }

@@ -9,32 +9,47 @@
 
     <div class="board">
         <div class="board-bar">
-            <p class="board-name">Board Name</p>
+            <p class="board-name">{{board.name}}</p>
         </div>
         <div class="level mt-2">
             <div class="level-item">
-                <span class="fa-stack fa-lg has-text-success pointer">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-floppy-disk fa-stack-1x fa-inverse"></i>
-                </span>
-                <div class="js-modal-trigger" data-target="modal-js-example">
-                    <span class="fa-stack fa-lg has-text-info pointer">
+                <!-- Tooltip -->
+                <div class="tooltip">
+                    <span class="fa-stack fa-lg has-text-success pointer" (click) = "save()">
                         <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+                        <i class="fa fa-floppy-disk fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="tooltiptext tooltip-bottom">Save</span>
+                </div>
+                <div class="tooltip">
+                    <div class="js-modal-trigger" data-target="modal-js-example">
+                        <span class="fa-stack fa-lg has-text-info pointer">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+                            <!-- <i class="fa fa-plus fa-stack-1x fa-inverse"></i> -->
+                            <!-- <i class="fa-solid fa-plus fa-2xs"></i> -->
+                        </span>
+                    </div>
+                    <span class="tooltiptext tooltip-bottom">New Activity</span>
+                </div>
+                <div class="tooltip">
+                    <span class="fa-stack fa-lg pointer" style="color: #CCCC00	;" (click)="triggerEdit()">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <span class="tooltiptext tooltip-bottom">Edit</span>
+                </div>
+                <div class="tooltip">
+                    <div class="js-modal-trigger" data-target="modal-my-board" (click)="selectAllBoard()"> 
+                        <span class="fa-stack fa-lg pointer" style="color: rgb(75, 193, 233)">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-list-check fa-stack-1x fa-inverse"></i>
                         <!-- <i class="fa fa-plus fa-stack-1x fa-inverse"></i> -->
                         <!-- <i class="fa-solid fa-plus fa-2xs"></i> -->
-                    </span>
+                        </span>
                 </div>
-                <span class="fa-stack fa-lg pointer" style="color: #CCCC00	;" (click)="triggerEdit()">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
-                </span>
-                <span class="fa-stack fa-lg pointer" style="color: darkviolet">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-list-check fa-stack-1x fa-inverse"></i>
-                    <!-- <i class="fa fa-plus fa-stack-1x fa-inverse"></i> -->
-                    <!-- <i class="fa-solid fa-plus fa-2xs"></i> -->
-                </span>
+                <span class="tooltiptext tooltip-bottom">My Board</span>
+            </div>
                 <!-- <span awesomeTooltip="Tooltip text">This is an example</span> -->
 
 
@@ -50,17 +65,20 @@
                     
                     <div class="level">
                         <div class="level-left column-title mt-3">
-                            {{column.name}}
+                            <p [id]="column.id" (dblclick)="showEditActivity($event, column)">{{column.name}}</p>
+                            <span class="hidden-icon" style="display: none;" (click)="showEditActivity($event, column)">
+                                <i class="ml-2 fa-solid fa-highlighter pointer white-color"></i>
+                            </span>
                         </div>
-                        <div class="level-right" style="cursor: pointer;" (click)="onShowInsert(column.name)">
-                                <i class="fa-solid fa-lg fa-circle-plus has-text-info"></i>
+                        <div class="level-right pointer" (click)="onShowInsert(column.name)">
+                            <i class="fa-solid fa-lg fa-circle-plus has-text-info"></i>
                         </div>
 
                     </div>
                         
                     <div class="task-container" [id]="'container' + column.name" hidden>
                         <div class="task">
-                            <input [id]="'task' + column.name" class="input is-normal" type="text" placeholder="New task" (keypress)="insertTask($event, column.name)" required>
+                            <input [id]="'task' + column.name" class="input is-normal" type="text" placeholder="New task" (keypress)="insertTask($event, column)" required>
                             <span class="mt-2 ml-1 has-text-danger" style="cursor: pointer;" (click)="onCloseInsert(column.name)"><i class="fa-solid fa-circle-xmark"></i></span>
                         </div>
                         <div id="error-task" hidden>
@@ -82,8 +100,8 @@
                        <p [id]="item" class="{{column.name}}" (dblclick)="showEditTask($event, item, column)"> {{item}} </p> 
                        <!-- <div class="level-right has-text-danger pointer delete-icon" style="display: none;" hidden><i class="fa-solid fa-sm fa-edit"></i></div> -->
                        <div class="level">
-                           <div class="level-right pointer delete-icon mr-2" style="display: none;" (click)="showEditTask($event, item, column)" hidden><i class="fa-solid fa-sm fa-edit"></i></div>
-                           <div class="level-right has-text-danger pointer delete-icon" style="display: none;" (click)="deleteTask(item, column)"  hidden><i class="fa-solid fa-sm fa-trash"></i></div>
+                           <div class="level-right pointer hidden-icon mr-2" style="display: none;" (click)="showEditTask($event, item, column)" hidden><i class="fa-solid fa-sm fa-edit"></i></div>
+                           <div class="level-right has-text-danger pointer hidden-icon" style="display: none;" (click)="deleteTask(item, column)"  hidden><i class="fa-solid fa-sm fa-trash"></i></div>
 
                        </div>
                     </div>
@@ -113,6 +131,43 @@
                 </footer>
             </div>
         </div>
+
+        <!-- modals My board -->
+        <div class="modal" id="modal-my-board">
+            <div class="modal-background"></div>
+            <div class="modal-card" style="width: 50%;">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">My Board</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <!-- Content ... -->
+                    <div class="task-container"  *ngFor="let d of dbBoard">
+                        <!-- {{if(d.name == board.name){} }} -->
+                        <div class="task pointer box myboard"  [id]="'board' + d.id" (click)="activateBoard(d.id)">
+                            {{d.name}}
+                        </div>
+                        <input type="radio" name="radioBoard" [id]="'radioBoard'+d.id" [value]="d.name" hidden>
+                        
+                    </div>
+                    <!-- <div class="task-container">
+                        <div class="task pointer box myboard">
+                            My Board
+                        </div>
+                    </div> -->
+                    
+                    <!-- <input class="input is-info" id="new-activity" type="text" placeholder="New Activity" required>
+                    <div id="error-activity" hidden>
+                        <small class="has-text-danger">Activity is required</small>
+                    </div> -->
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success">Load</button>
+                    <button class="button cancel">Cancel</button>
+                </footer>
+            </div>
+        </div>
+
 
     </div>
 

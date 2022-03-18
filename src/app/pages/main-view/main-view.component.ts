@@ -5,6 +5,9 @@ import { Column } from 'src/app/models/column.model';
 import { MainViewService } from './main-view.service';
 import { AwesomeTooltipComponent } from 'src/app/awesome-tooltip.directive.spec';
 import Swal from 'sweetalert2';
+import { UserBoardData } from './user-board-data.service';
+
+// import { stringify } from 'querystring';
 
 
 @Component({
@@ -14,18 +17,22 @@ import Swal from 'sweetalert2';
   entryComponents: [AwesomeTooltipComponent]
 })
 export class MainViewComponent implements OnInit {
-  public board;
+  public board:any;
   public data:any[] = [];
+  public dbBoard:any[] = [];
   constructor(service: MainViewService) {
     this.board = service.getBoard();
     // console.log(this.board.columns[0]);
     for (let i = 0; i < this.board.columns.length; i++) {
+      let id = this.board.columns[i].id;
       let name = this.board.columns[i].name;
       let tasks = this.board.columns[i].tasks;
       if (localStorage.getItem('isset') == '0'){
-        localStorage.setItem(name, JSON.stringify({name : name, tasks : tasks})); 
+        // localStorage.clear();
+        localStorage.setItem(String(id), JSON.stringify({id:id, name : name, tasks : tasks})); 
       }
-      this.data.push(JSON.parse(localStorage.getItem(name)|| '{}'));
+      this.data.push(JSON.parse(localStorage.getItem(String(id))|| '{}'));
+
     }
     // console.log('data : ', this.data[1].name);
     // console.log('board : ', this.board.columns[1].name);
@@ -64,7 +71,7 @@ export class MainViewComponent implements OnInit {
   // localstorage.setItem('board', 'board');
   
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
   }
 
   todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
@@ -142,19 +149,19 @@ export class MainViewComponent implements OnInit {
     container!.style.display = 'none'; 
   }
 
-  insertTask(event: KeyboardEvent, name:string){
+  insertTask(event: KeyboardEvent, column:any){
     if (event.code==='Enter') {
-      let task = (<HTMLInputElement>document.getElementById('task'+ name))!.value;
+      let task = (<HTMLInputElement>document.getElementById('task'+ column.name))!.value;
       console.log(task);
       // check if data is empty or not
       if (task=="") {
         document.getElementById('error-task')!.style.display = 'block';
       }
       else{
-        let boardData = JSON.parse(localStorage.getItem(name) || '{}'); // array of object
+        let boardData = JSON.parse(localStorage.getItem(column.id) || '{}'); // array of object
         let boardArray = boardData.tasks;
         boardArray.push(task);
-        localStorage.setItem(name, JSON.stringify({ name: name, tasks: boardArray }));
+        localStorage.setItem(column.id, JSON.stringify({ id:column.id, name: column.name, tasks: boardArray }));
         localStorage.setItem('isset','1');
         location.reload();
         // console.log(event);
@@ -166,8 +173,10 @@ export class MainViewComponent implements OnInit {
   }
 
   triggerEdit(){
-    let deleteIcon = document.getElementsByClassName('delete-icon');
-    let array = Array.from(deleteIcon as HTMLCollectionOf<HTMLElement>);
+    let icon = document.getElementsByClassName('hidden-icon');
+    let array = Array.from(icon as HTMLCollectionOf<HTMLElement>);
+    // console.log(array);
+    
     for (let i = 0; i < array.length; i++) {
       if (array[i].style.display=='none') {
         array[i].style.display = 'block';      
@@ -209,12 +218,12 @@ export class MainViewComponent implements OnInit {
   
 showEditTask(event:MouseEvent ,item:any, column:any){
   //  console.log(event);
-  // console.log(item);
+  console.log(column);
   let id = document.getElementById(item);
   const value = id!.innerHTML;
   if (!this.isHTML(value)) {
     id!.innerHTML = `<input id="edit` + item + `" class="input is-normal" type="text" value="` + value +`" 
-    onkeypress="editTask(event, '`+ item + `', '` + column.name +`')">`;
+    onkeypress="editTask(event, '`+ item + `', '` + column.name + `' , '` + column.id +`')">`;
   }
   
 }
@@ -243,10 +252,13 @@ deleteTask(item:any, column:any) {
     confirmButtonText: 'Yes, delete it!'
   }).then((result) => {
     if (result.isConfirmed) {
-      Swal.fire(
-        'Deleted!',
-        'Your file has been deleted.',
-        'success'
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'Your file has been deleted.',
+        icon: 'success',
+        showConfirmButton: false,
+        timer: 1000
+        }
       )
       // buat array baru
       let array = [];
@@ -259,9 +271,16 @@ deleteTask(item:any, column:any) {
       if (index !== -1) {
         array.splice(index, 1);
       }
-      localStorage.setItem(column.name, JSON.stringify({ name: column.name, tasks: array }));
+      console.log(array);
+      
+      localStorage.setItem(column.id, JSON.stringify({ id:column.id, name: column.name, tasks: array }));
       localStorage.setItem('isset', '1');
-      document.getElementById('task' + item)!.style.display = 'none';
+      setTimeout(function () {
+        //your code to be executed after 1 second
+        location.reload();
+      }, 1000);
+
+      // document.getElementById('task' + item)!.style.display = 'none';
     }
 
   })
@@ -297,10 +316,102 @@ insertActivity(){
   }
 }
 
+  showEditActivity(event: MouseEvent, column:any) {
+    // console.log(event);
+    console.log(column);
+    let id = document.getElementById(column.id);
+    const value = id!.innerHTML;
+    if (!this.isHTML(value)) {
+      id!.innerHTML = `<input id="edit` + column.id + `" class="input is-normal" type="text" value="` + value + `" 
+    onkeypress="editActivity(event, '`+ column.name + `', '` + column.id + `')">`;
+    }
+  
+
+  }
+
+  save(){
+    Swal.fire({
+      title: 'Saved!',
+      text: 'Your work has been saved.',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    });
+    setTimeout(function () {
+      //your code to be executed after 1 second
+      location.reload();
+    }, 1500);
+  }
+
+  selectAllBoard(){
+    let db = new UserBoardData();
+    let dbBoard = db.databaseBoard();
+    this.dbBoard = dbBoard;
+    
+    setTimeout(() => { this.highlightBoard() }, 1);
+    // let n: ReturnType<typeof setInterval>;
+    // n = setInterval(this.highlightBoard(), 500);
+    // setInterval(),1);
+    // this.highlightBoard();
+    // console.log(dbBoard);
+    // this.highlightBoard();
+  }
+
+  highlightBoard(){
+    // for (let i = 0; i < this.dbBoard.length; i++) {
+    //   let idString = 'board' + this.dbBoard[i].id.toString();
+    //   let getId = document.getElementById(idString);
+    //   // console.log(this.dbBoard[i].name);
+    //   // console.log(this.board.name);
+    //   let radioString = 'radioBoard' + this.board.id.toString();
+    //   let radio = document.getElementById(radioString) as HTMLInputElement;
+    //   console.log(radioString);
+      
+    //   if (this.dbBoard[i].id == this.board.id) {
+    //     getId!.className = 'task pointer box myboard active';
+    //     radio!.setAttribute("checked", "");
+    //   }      
+    // }
+    
+    let getId = document.getElementById('board' + this.board.id.toString());
+    // getId!.className = 'task pointer box myboard active';
+    getId!.classList.add('active');
+    console.log(getId);
+    
+  }
+
+  activateBoard(id:number){
+    let getId = document.getElementById('board'+ id.toString());
+    let getClass = document.getElementsByClassName('myboard');
+    let radio = document.getElementById('radioBoard' + id.toString()) as HTMLInputElement;
+    for (let i = 0; i < getClass.length; i++) {
+      getClass[i].className = 'task pointer box myboard';      
+    }
+    radio!.setAttribute("checked", "");
+    getId!.className = 'task pointer box myboard active';
+    // for (let i = 0; i < this.dbBoard.length; i++) {
+    //   getId = document.getElementById('board' + this.dbBoard[i].id.toString());
+    //   if (radio!.checked) {
+    //     getId!.className = 'task pointer box myboard active';
+    //     console.log('checked');
+        
+    //   }
+    //   else{
+    //     getId!.className = 'task pointer box myboard';
+    //     console.log('not cheked');
+        
+    //   }
+      
+    // }
+    // console.log(getId);
+    
+  }
+
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     this.closeAllEdit();
   }
+
 
 }
 
