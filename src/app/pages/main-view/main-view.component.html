@@ -98,11 +98,10 @@
                         [cdkDragData]="item"
                         (cdkDragStarted)="onDragOver($event, column, item)">
                        <p [id]="item" class="{{column.name}}" (dblclick)="showEditTask($event, item, column)"> {{item}} </p> 
-                       <!-- <div class="level-right has-text-danger pointer delete-icon" style="display: none;" hidden><i class="fa-solid fa-sm fa-edit"></i></div> -->
+                      
                        <div class="level">
                            <div class="level-right pointer hidden-icon mr-2" style="display: none;" (click)="showEditTask($event, item, column)" hidden><i class="fa-solid fa-sm fa-edit"></i></div>
                            <div class="level-right has-text-danger pointer hidden-icon" style="display: none;" (click)="deleteTask(item, column)"  hidden><i class="fa-solid fa-sm fa-trash"></i></div>
-
                        </div>
                     </div>
                 </div>
@@ -142,12 +141,54 @@
                 </header>
                 <section class="modal-card-body">
                     <!-- Content ... -->
+                    <div class="level-item mb-2">
+                        <div class="tooltip">
+                                <span class="fa-stack fa-lg has-text-info pointer" (click)="showNewBoard()">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+                                    <!-- <i class="fa fa-plus fa-stack-1x fa-inverse"></i> -->
+                                    <!-- <i class="fa-solid fa-plus fa-2xs"></i> -->
+                                </span>
+                            <span class="tooltiptext tooltip-bottom">New Board</span>
+                        </div>
+                        <div class="tooltip">
+                            <span class="fa-stack fa-lg pointer" style="color: #CCCC00	;" (click)="showEditBoard()">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <span class="tooltiptext tooltip-bottom">Edit Board</span>
+                        </div>
+                        <div class="tooltip">
+                            <span class="fa-stack fa-lg pointer has-text-danger" (click)="showDeleteBoard()">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <span class="tooltiptext tooltip-bottom">Delete Board</span>
+                        </div>
+                    </div>
+                    <!-- input new board -->
+                    <div class="task-container" style="display: none;"  [id]="'new-board'" >
+                        <div class="task pointer">
+                            <input class="input is-normal" type="text" placeholder="New Board" required>
+                            <span class="mt-2 ml-1 has-text-danger pointer" (click)="closeNewBoard()"><i class="fa-solid fa-circle-xmark"></i></span>
+                        </div>
+                        <div id="error-task" hidden>
+                            <small class="has-text-danger">Board is required</small>
+                        </div>
+                    
+                    </div>
+
                     <div class="task-container"  *ngFor="let d of dbBoard">
                         <!-- {{if(d.name == board.name){} }} -->
-                        <div class="task pointer box myboard"  [id]="'board' + d.id" (click)="activateBoard(d.id)">
+                        <div class="task pointer box myboard level"  [id]="'board' + d.id" (click)="activateBoard(d.id)">
                             {{d.name}}
+                            <div class="level-right">
+                                <div class="pointer hidden-edit mr-2" style="display: none;"><i class="fa-solid fa-sm fa-edit"></i></div>
+                                <div class="has-text-danger pointer hidden-delete" style="display: none;"><i class="fa-solid fa-sm fa-trash"></i></div>
+                            </div>
                         </div>
                         <input type="radio" name="radioBoard" [id]="'radioBoard'+d.id" [value]="d.name" hidden>
+                        
                         
                     </div>
                     <!-- <div class="task-container">

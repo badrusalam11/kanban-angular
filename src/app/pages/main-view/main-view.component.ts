@@ -389,22 +389,44 @@ insertActivity(){
     }
     radio!.setAttribute("checked", "");
     getId!.className = 'task pointer box myboard active';
-    // for (let i = 0; i < this.dbBoard.length; i++) {
-    //   getId = document.getElementById('board' + this.dbBoard[i].id.toString());
-    //   if (radio!.checked) {
-    //     getId!.className = 'task pointer box myboard active';
-    //     console.log('checked');
-        
-    //   }
-    //   else{
-    //     getId!.className = 'task pointer box myboard';
-    //     console.log('not cheked');
-        
-    //   }
-      
-    // }
-    // console.log(getId);
     
+    
+  }
+
+  showNewBoard(){
+    let elementId = document.getElementById('new-board');
+    elementId!.style.display = 'block';
+  }
+  closeNewBoard() {
+    let elementId = document.getElementById('new-board');
+    elementId!.style.display = 'none';
+  }
+
+  showEditBoard(){
+    let elementId = Array.from(document.getElementsByClassName('hidden-edit') as HTMLCollectionOf<HTMLElement>)
+    for (let i = 0; i < elementId.length; i++) {
+      if (elementId[i]!.style.display == 'none') {
+        elementId[i]!.style.display = 'block';
+        
+      }
+      else{
+        elementId[i]!.style.display = 'none';
+        
+      }
+    }
+  }
+  showDeleteBoard() {
+    let elementId = Array.from(document.getElementsByClassName('hidden-delete') as HTMLCollectionOf<HTMLElement>)
+    for (let i = 0; i < elementId.length; i++) {
+      if (elementId[i]!.style.display == 'none') {
+        elementId[i]!.style.display = 'block';
+
+      }
+      else {
+        elementId[i]!.style.display = 'none';
+
+      }
+    }
   }
 
 
